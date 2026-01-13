@@ -148,22 +148,37 @@ Payload example:
 
 ---
 
-### 4. Prediction Topics (Optional)
+### Prediction Service (REST-based)
 
-**Publisher:** Prediction Service  
-**Subscriber:** Monitoring Service or other services
+The Prediction Service does **not** use MQTT.
 
+It is invoked via a synchronous REST call by the Monitoring Service
+to evaluate water quality based on sensor values.
+
+**Endpoint:**
 ```
-aquarium/{device_id}/prediction
+POST /predict
 ```
 
-Payload example:
+**Request payload:**
 ```json
 {
-  "device_id": "123",
-  "quality": "bad"
+  "nitrate": <number>,
+  "turbidity": <number>
 }
 ```
+
+**Response example:**
+```json
+{
+  "status": "ok",
+  "water_quality": "good | bad",
+  "ts": <unix_epoch_seconds>
+}
+```
+
+The service uses a KNN classifier and is intentionally kept REST-only
+to separate prediction logic from real-time MQTT data flow.
 
 ---
 
