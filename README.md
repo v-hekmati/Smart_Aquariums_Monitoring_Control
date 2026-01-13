@@ -1,35 +1,89 @@
 # Smart Aquarium IoT Platform
 
-An academic IoT microservices project for **monitoring and controlling smart aquariums**.
-The system reads water-quality sensors, publishes data via **MQTT**, stores it in a database, checks thresholds, sends alerts to users (Telegram),
-and can remotely control actuators (feeder + water pump). Cloud visualization is supported via **ThingSpeak**.
+This repository contains an academic IoT project for monitoring and controlling smart aquariums using a microservices-based architecture.
+The system collects water quality data from sensors, processes and stores it, sends alerts, and allows remote control of aquarium actuators.
+
+The project combines **MQTT (publish/subscribe)** and **REST APIs (request/response)** to demonstrate a realistic IoT platform design.
 
 ---
 
-## Architecture (High level)
+## Project Goals
 
-![Smart Aquarium Architecture](architecture.png)
+- Monitor aquarium water quality in real time
+- Detect abnormal conditions using thresholds
+- Predict water quality using machine learning
+- Remotely control feeder and water pump
+- Provide cloud visualization and user notifications
+- Demonstrate a modular IoT microservices architecture
 
+---
 
-Core components:
-- **Device Connector**: reads sensors, aggregates data (sliding window), publishes MQTT, subscribes to commands.
-- **MQTT Broker (Mosquitto)**: message backbone.
-- **Service Catalogue (Resource Catalogue)**: service discovery + device/resource registry.
-- **Storage Service**: subscribes to sensor data and stores it in **MariaDB**; provides REST endpoint for latest data.
-- **Monitoring Service**: subscribes to sensor data; evaluates thresholds; publishes alerts; may publish commands.
-- **Prediction Service**: REST service using **KNN** (scikit-learn) for water-quality prediction.
-- **ThingSpeak Adapter**: forwards MQTT data to ThingSpeak.
-- **User Catalogue**: user management + mapping users to devices (used by Telegram + Admin Dashboard).
-- **Admin Dashboard (PHP)**: web UI for user/device management.
-- **Telegram Bot**: login, reports, commands, and alert notifications.
+## System Architecture
+
+The system is composed of multiple independent services communicating through an MQTT broker and REST APIs.
+
+### Main Components
+
+- **Device Connector**
+  - Reads physical sensors (temperature, nitrate, turbidity, leakage)
+  - Aggregates sensor data
+  - Publishes data via MQTT
+  - Subscribes to control commands
+  - Controls feeder and water pump
+
+- **MQTT Broker**
+  - Central message broker
+  - Enables asynchronous communication between services
+
+- **Service Catalogue (Resource Catalogue)**
+  - Service discovery
+  - Device and resource registration
+  - Used by all services to locate each other
+
+- **Monitoring Service**
+  - Subscribes to sensor data
+  - Checks thresholds
+  - Generates alerts
+  - Can trigger actuator commands automatically
+
+- **Prediction Service**
+  - Uses KNN algorithm
+  - Predicts water quality based on sensor data
+  - Exposes REST API and/or MQTT output
+
+- **Storage Service**
+  - Stores sensor data in a database (MariaDB)
+  - Exposes REST APIs for data retrieval
+
+- **ThingSpeak Adapter**
+  - Subscribes to sensor data
+  - Sends data to ThingSpeak cloud for visualization
+
+- **User Catalogue**
+  - Manages users
+  - Maps users to aquarium devices
+  - Used by Telegram and Admin Dashboard
+
+- **Admin Dashboard**
+  - Web interface
+  - Manages users and devices
+  - Assigns devices to users
+
+- **Telegram Client / Bot**
+  - Sends alerts to users
+  - Allows sending commands to devices
+  - Provides basic reporting
 
 ---
 
 ## MQTT Topics
 
-### Sensor data
+MQTT is the core communication mechanism for real-time data exchange.
+
+### 1. Sensor Data Topics
+
 **Publisher:** Device Connector  
-**Subscribers:** Storage Service, Monitoring Service, ThingSpeak Adapter
+**Subscribers:** Monitoring Service, Storage Service, ThingSpeak Adapter
 
 ```
 aquarium/{device_id}/sensors/agg
@@ -47,153 +101,123 @@ Example payload:
 }
 ```
 
-### Commands (actuators)
-**Publishers:** Telegram Bot, Monitoring Service  
+---
+
+### 2. Control Command Topics
+
+**Publishers:** Telegram Client, Monitoring Service  
 **Subscriber:** Device Connector
 
-Feeder:
+Feeder control:
 ```
 aquarium/{device_id}/cmd/feeder
 ```
 
-Water pump:
+Water pump control:
 ```
 aquarium/{device_id}/cmd/water_pump
 ```
 
 Payload example:
 ```json
-{ "action": "on" }
+{
+  "action": "on"
+}
 ```
 
-### Alerts
+---
+
+### 3. Alert Topics
+
 **Publisher:** Monitoring Service  
-**Subscriber:** Telegram Bot
+**Subscriber:** Telegram Client
 
 ```
 aquarium/{device_id}/alerts
 ```
 
----
-
-## REST APIs (overview)
-
-- **Storage Service**
-  - `GET /devices/{device_id}/latest`  → returns latest stored measurements
-
-- **Prediction Service**
-  - `POST /predict` with JSON: `{"nitrate": <number>, "turbidity": <number>}`
-  - returns: `{"status":"ok","water_quality":"good|bad","ts":...}`
-
-Other services (Catalogue, User Catalogue) expose REST endpoints for discovery and user/device mapping.
+Payload example:
+```json
+{
+  "device_id": "123",
+  "sensor": "temperature",
+  "value": 32,
+  "message": "Temperature exceeded safe range"
+}
+```
 
 ---
 
-## Requirements
+### 4. Prediction Topics (Optional)
 
-### System / Services
-- **Python 3.10+**
-- **MQTT Broker**: Mosquitto
-- **MariaDB Server** (or compatible MySQL/MariaDB)
-- **PHP 8+** (for Admin Dashboard) + a web server (Apache/Nginx or PHP built-in server)
+**Publisher:** Prediction Service  
+**Subscriber:** Monitoring Service or other services
 
-### Python Libraries
-Install from `requirements.txt` (provided in this repo):
-- cherrypy
-- requests
-- telepot
-- pandas
-- scikit-learn
-- mariadb
-- paho-mqtt (used by MQTT client wrapper)
+```
+aquarium/{device_id}/prediction
+```
+
+Payload example:
+```json
+{
+  "device_id": "123",
+  "quality": "bad"
+}
+```
 
 ---
 
-## How to Run (Local)
+## REST APIs Overview
 
-> Notes:
-> - Each microservice typically has its own `config.json` next to its `main.py`.
-> - Start components in this order to avoid service discovery issues.
-> - If you use different ports/hosts, update configs accordingly.
+REST APIs are mainly used for configuration and data access.
 
-### 1) Start MQTT Broker (Mosquitto)
-On Linux:
-```bash
-sudo apt-get install -y mosquitto
-sudo systemctl enable --now mosquitto
-```
+### Service Catalogue
+- Register services
+- Discover service endpoints
+- Retrieve device metadata
 
+### User Catalogue
+- User registration
+- User authentication
+- User-device association
 
-### 2) Start MariaDB
-Install (Linux):
-```bash
-sudo apt-get install -y mariadb-server
-sudo systemctl enable --now mariadb
-```
+### Storage Service
+- `GET /devices/{device_id}/latest`
+- `GET /devices/{device_id}/history`
 
-Create database + table (example):
-```sql
-CREATE DATABASE smart_aquariums;
-USE smart_aquariums;
+### Prediction Service
+- `POST /predict`
 
-CREATE TABLE measurements (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  device_id VARCHAR(64) NOT NULL,
-  ts BIGINT NOT NULL,
-  sensor VARCHAR(64) NOT NULL,
-  value DOUBLE NOT NULL
-);
+---
 
-CREATE INDEX idx_device_ts ON measurements(device_id, ts);
-```
+## Hardware Components
 
-### 3) Create & activate Python venv
-From each Python service folder (or a root folder if you keep one venv):
-```bash
-python -m venv .venv
-# Linux/Mac:
-source .venv/bin/activate
-# Windows:
-# .venv\Scripts\activate
-pip install -r requirements.txt
-```
+- Raspberry Pi
+- Temperature sensor
+- Nitrate sensor
+- Turbidity sensor
+- Leakage sensor
+- Feeder actuator
+- Water pump actuator
 
-### 4) Run Service Catalogue
-Run the catalogue service (the component that provides service discovery).
-Example:
-```bash
-python main.py
-```
+---
 
-### 5) Run Storage Service
-Storage subscribes to `aquarium/+/sensors/agg` and stores data in MariaDB:
-```bash
-python main.py
-```
+## Technologies Used
 
-### 6) Run Prediction Service
-Prediction service exposes `POST /predict`:
-```bash
-python main.py
-```
+- Python
+- MQTT (Mosquitto)
+- REST (CherryPy)
+- MariaDB
+- ThingSpeak
+- Telegram Bot API
+- Machine Learning (KNN)
 
-### 7) Run Monitoring Service
-Monitoring subscribes to sensor data, checks thresholds, and publishes alerts:
-```bash
-python main.py
-```
+---
 
-### 8) Run Device Connector
-Device connector reads sensors (or simulated sensors), aggregates using a sliding window, and publishes MQTT:
-```bash
-python main.py
-```
+## Project Scope
 
-### 9) Run Telegram Bot
-Telegram bot discovers services via the catalogue, sends commands, and subscribes to alerts:
-```bash
-python main.py
-```
+This project is developed for academic purposes.
+The focus is on system design, service interaction, and IoT concepts rather than production-level optimization.
 
-### 10) Run Admin Dashboard (PHP,jQuery)
+---
 
