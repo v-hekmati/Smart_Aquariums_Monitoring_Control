@@ -1,0 +1,6 @@
+mosquitto_sub -h localhost -p 1883 -t "aquarium/+/alerts" -v
+mosquitto_sub -h localhost -p 1883 -t "aquarium/+/sensors/agg" -v
+mosquitto_sub -h localhost -p 1883 -t "aquarium/+/cmd/#" -v
+for publish alert to telegram = "aquarium/+/alerts" -v
+for get the sensor data = "aquarium/+/sensors/agg" -v
+for send command to device connector and # may be feeder or water_pump = "aquarium/+/cmd/#" -v

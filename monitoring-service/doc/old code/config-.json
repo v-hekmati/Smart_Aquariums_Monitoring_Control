@@ -1,0 +1,12 @@
+{
+  "service_name": "monitoring_service",
+  "host": "localhost",
+  "port": 8091,
+  "catalog_host": "localhost",
+  "catalog_port": 8080,
+  "mqtt_broker": "localhost",
+  "mqtt_port": 1883,
+  "predict_host": "localhost",
+  "predict_port": 8092,
+  "cache_ttl_seconds": 120
+}

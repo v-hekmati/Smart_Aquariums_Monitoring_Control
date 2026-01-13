@@ -1,0 +1,23 @@
+{
+  "service": {
+    "name": "telegram_bot",
+    "host": "localhost",
+    "port": 8095,
+    "register_self": false
+  },
+  "catalog": {
+    "host": "localhost",
+    "port": 8080
+  },
+  "mqtt": {
+    "broker": "localhost",
+    "port": 1883
+  },
+  "services": {
+    "user_catalogue_name": "user_catalogue",
+    "storage_name": "storage_service"
+  },
+  "telegram": {
+    "token": ""
+  }
+}

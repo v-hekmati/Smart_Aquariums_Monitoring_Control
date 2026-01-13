@@ -1,0 +1,12 @@
+{
+  "service_name": "thingspeak_adaptor",
+  "host": "localhost",
+  "port": 8097,
+  "mqtt_host": "localhost",
+  "mqtt_port": 1883,
+  "catalog_host": "localhost",
+  "catalog_port": 8080,
+  "mapping_file": "thingspeak_map.json",
+  "min_send_interval_sec": 16,
+  "thingspeak_user_api_key": ""
+}

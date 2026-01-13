@@ -1,0 +1,79 @@
+{
+  "device_id": null,
+  "sensors": {
+    "temperature": {
+      "min_valid": 0,
+      "max_valid": 100,
+      "unit": "c",
+      "threshold": {
+        "min": 25,
+        "max": 29
+      }
+    },
+    "nitrate": {
+      "min_valid": 0,
+      "max_valid": 200,
+      "unit": "mg/L",
+      "threshold": {
+        "min": 0,
+        "max": 40
+      }
+    },
+    "turbidity": {
+      "min_valid": 0,
+      "max_valid": 1000,
+      "unit": "NTU",
+      "threshold": {
+        "min": 0,
+        "max": 25
+      }
+    },
+    "leakage": {
+      "min_valid": 0,
+      "max_valid": 1,
+      "unit": "binary",
+      "threshold": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    "Ph": {
+      "min_valid": 0,
+      "max_valid": 15,
+      "unit": "binary",
+      "threshold": {
+        "min": 0,
+        "max": 30
+      }
+    }
+  },
+  "window_size": 3,
+  "sampling_interval_sec": 17,
+  "mqtt": {
+    "broker": "localhost",
+    "port": 1883,
+    "base_topic": "aquarium"
+  },
+  "catalogue": {
+    "host": "localhost",
+    "port": 8080,
+    "service": {
+      "type": "device_connector",
+      "protocol": "mqtt"
+    }
+  },
+  "device_label": "aqua-1floor",
+  "aquarium_name": "aq001",
+  "location": "floor1",
+  "actuators": {
+    "feeder": {},
+    "water_pump": {
+      "default_duration_sec": 40
+    }
+  },
+  "broker": {
+    "broker": "localhost",
+    "port": 1883,
+    "base_topic": "aquarium"
+  }
+}

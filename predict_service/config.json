@@ -1,0 +1,10 @@
+{
+  "service_name": "prediction_service",
+  "host": "localhost",
+  "port": 8092,
+  "catalog_host": "localhost",
+  "catalog_port": 8080,
+  "k": 3,
+  "nitrate_scale": 100,
+  "turbidity_scale": 100
+}
