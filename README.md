@@ -142,7 +142,7 @@ Payload example:
   "device_id": "123",
   "sensor": "temperature",
   "value": 32,
-  "message": "Temperature exceeded safe range"
+  "message": "..."
 }
 ```
 
@@ -183,7 +183,7 @@ REST APIs are mainly used for configuration and data access.
 
 ### Storage Service
 - `GET /devices/{device_id}/latest`
-- `GET /devices/{device_id}/history`
+
 
 ### Prediction Service
 - `POST /predict`
@@ -211,6 +211,7 @@ REST APIs are mainly used for configuration and data access.
 - ThingSpeak
 - Telegram Bot API
 - Machine Learning (KNN)
+- PHP - jQuery (admin pannel)
 
 ---
 
