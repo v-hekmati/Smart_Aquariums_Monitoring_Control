@@ -5,6 +5,7 @@ import telepot
 from telepot.loop import MessageLoop
 from datetime import datetime
 from mqtt_client import MQTTClient
+from service_registry import ServiceRegistry
 
 
 def load_config(path="config.telegram.json"):
@@ -227,6 +228,7 @@ def main():
 
     user_catalogue_name = cfg["services"]["user_catalogue_name"]
     storage_name = cfg["services"]["storage_name"]
+    ServiceRegistry(catalog_host, catalog_port).register("telegram_bot", "localhost", 8011)
 
     mqtt = MQTTClient(
         broker=mqtt_broker,
