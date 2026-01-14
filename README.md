@@ -203,7 +203,7 @@ to separate prediction logic from real-time MQTT data flow.
 - REST (CherryPy)
 - MariaDB
 - ThingSpeak
-- Telegram Bot API
+- Telegram Bot API 
 - Machine Learning (KNN)
 - PHP - jQuery (admin pannel)
 
