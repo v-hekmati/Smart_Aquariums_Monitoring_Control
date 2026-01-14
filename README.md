@@ -1,4 +1,5 @@
-# Smart Aquarium IoT Platform
+# IoT Platform for Smart Aquariums (Monitoring and Control)
+
 
 This repository contains an IoT project for monitoring and controlling smart aquariums using a microservices-based architecture.
 The system collects water quality data from sensors, processes and stores it, sends alerts, and allows remote control of aquarium actuators.
