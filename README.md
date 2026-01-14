@@ -1,6 +1,6 @@
 # Smart Aquarium IoT Platform
 
-This repository contains an academic IoT project for monitoring and controlling smart aquariums using a microservices-based architecture.
+This repository contains an IoT project for monitoring and controlling smart aquariums using a microservices-based architecture.
 The system collects water quality data from sensors, processes and stores it, sends alerts, and allows remote control of aquarium actuators.
 
 The project combines **MQTT (publish/subscribe)** and **REST APIs (request/response)** to demonstrate a realistic IoT platform design.
@@ -19,7 +19,8 @@ The project combines **MQTT (publish/subscribe)** and **REST APIs (request/respo
 - Remotely control feeder and water pump
 - Provide cloud visualization and user notifications
 - Demonstrate a modular IoT microservices architecture
-
+- Modular and scalable system design (allowing multiple users to manage their aquariums )
+ 
 ---
 
 ## System Architecture
