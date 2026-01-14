@@ -101,8 +101,7 @@ Example payload:
   "nitrate": 14,
   "turbidity": 8,
   "leakage": 0,
-  "timestamp": 1700000000
-}
+ }
 ```
 
 ---
@@ -122,12 +121,6 @@ Water pump control (Automatically published by the Monitoring Service):
 aquarium/{device_id}/cmd/water_pump
 ```
 
-Payload example:
-```json
-{
-  "action": "on"
-}
-```
 
 ---
 
@@ -144,10 +137,12 @@ Payload example:
 ```json
 {
   "device_id": "123",
-  "sensor": "temperature",
+  "level": "warning",
   "value": 32,
-  "message": "..."
+  "message": "temperature out of range - value : 32",
+  "ts": 1700000000
 }
+
 ```
 
 ---
