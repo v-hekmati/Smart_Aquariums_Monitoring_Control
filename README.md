@@ -6,6 +6,10 @@ The system collects water quality data from sensors, processes and stores it, se
 The project combines **MQTT (publish/subscribe)** and **REST APIs (request/response)** to demonstrate a realistic IoT platform design.
 
 ---
+## System Architecture
+
+![System Architecture](architecture.png)
+
 
 ## Project Goals
 
@@ -44,12 +48,12 @@ The system is composed of multiple independent services communicating through an
   - Subscribes to sensor data
   - Checks thresholds
   - Generates alerts
-  - Can trigger actuator commands automatically
+  - Automatic actuation of the water pump based on predicted Turbidity and Nitrate levels
 
 - **Prediction Service**
   - Uses KNN algorithm
   - Predicts water quality based on sensor data
-  - Exposes REST API and/or MQTT output
+  - Returns the prediction to the Monitoring Service
 
 - **Storage Service**
   - Stores sensor data in a database (MariaDB)
@@ -113,7 +117,7 @@ Feeder control:
 aquarium/{device_id}/cmd/feeder
 ```
 
-Water pump control:
+Water pump control (Automatically published by the Monitoring Service):
 ```
 aquarium/{device_id}/cmd/water_pump
 ```
@@ -150,7 +154,7 @@ Payload example:
 
 ### Prediction Service (REST-based)
 
-The Prediction Service does **not** use MQTT.
+The Prediction Service  
 
 It is invoked via a synchronous REST call by the Monitoring Service
 to evaluate water quality based on sensor values.
@@ -182,28 +186,7 @@ to separate prediction logic from real-time MQTT data flow.
 
 ---
 
-## REST APIs Overview
-
-REST APIs are mainly used for configuration and data access.
-
-### Service Catalogue
-- Register services
-- Discover service endpoints
-- Retrieve device metadata
-
-### User Catalogue
-- User registration
-- User authentication
-- User-device association
-
-### Storage Service
-- `GET /devices/{device_id}/latest`
-
-
-### Prediction Service
-- `POST /predict`
-
----
+ 
 
 ## Hardware Components
 
